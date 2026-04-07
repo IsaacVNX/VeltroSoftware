@@ -1,0 +1,104 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras para a coleção 'users'
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId;
+      // Admins podem ler e escrever nos perfis de usuários de sua organização
+      allow read, write: if request.auth != null && 
+                          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.organizationId == resource.data.organizationId &&
+                          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'gestor'];
+    }
+
+    // Regras para a coleção 'organizations'
+    match /organizations/{orgId} {
+      allow read: if request.auth != null && request.auth.token.organizationId == orgId;
+      // A criação é feita via Cloud Function. A atualização (ex: memberCount) também.
+      allow create, update, delete: if false; 
+    }
+
+    // Regras para a coleção 'obras'
+    match /obras/{obraId} {
+        allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+        allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+        allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+        // Subcoleção de checklists
+        match /checklists/{checklistId} {
+            allow read, write: if request.auth != null; // Simplificado por enquanto, pode ser refinado
+            match /versions/{versionId} {
+               allow read, write: if request.auth != null;
+            }
+        }
+    }
+    
+    // Regras para a coleção 'colaboradores'
+    match /colaboradores/{colaboradorId} {
+      // Permite a leitura de um colaborador se o requisitante pertence à mesma organização.
+      allow get: if request.auth != null && request.auth.token.organizationId == get(/databases/$(database)/documents/colaboradores/$(colaboradorId)).data.organizationId;
+      // Permite listar colaboradores SE a consulta filtrar pela organizationId do requisitante.
+      allow list: if request.auth != null && request.query.where.get("organizationId") == request.auth.token.organizationId;
+      // Permite a criação se o requisitante for admin/gestor e o novo colaborador for da mesma org.
+      allow create: if request.auth != null && request.auth.token.role in ['admin', 'gestor'] && request.resource.data.organizationId == request.auth.token.organizationId;
+       // Permite a atualização se o requisitante for admin/gestor e o colaborador for da mesma org.
+      allow update: if request.auth != null && request.auth.token.role in ['admin', 'gestor'] && get(/databases/$(database)/documents/colaboradores/$(colaboradorId)).data.organizationId == request.auth.token.organizationId;
+       // Permite a exclusão se o requisitante for admin/gestor e o colaborador for da mesma org.
+      allow delete: if request.auth != null && request.auth.token.role in ['admin', 'gestor'] && get(/databases/$(database)/documents/colaboradores/$(colaboradorId)).data.organizationId == request.auth.token.organizationId;
+
+      // Subcoleção de histórico do colaborador
+      match /historico/{historicoId} {
+        allow read, write: if request.auth != null && request.auth.token.role in ['admin', 'gestor'];
+      }
+    }
+    
+     // Coleções da Expedição
+    match /clientes_expedicao/{clienteId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+     match /obras_expedicao/{obraId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+    match /produtos_expedicao/{produtoId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+     match /transportadoras_expedicao/{transportadoraId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+     match /fornecedores_expedicao/{fornecedorId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+     match /entradas_expedicao/{entradaId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+     match /saidas_expedicao/{saidaId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+
+     // Coleções do Almoxarifado
+    match /fornecedores_almoxarifado/{fornecedorId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+     match /produtos_almoxarifado/{produtoId} {
+      allow read, delete: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId;
+      allow create: if request.auth != null && request.auth.token.organizationId == request.resource.data.organizationId;
+      allow update: if request.auth != null && request.auth.token.organizationId == resource.data.organizationId && request.auth.token.organizationId == request.resource.data.organizationId;
+    }
+  }
+}
