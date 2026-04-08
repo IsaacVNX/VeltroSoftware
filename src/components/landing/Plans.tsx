@@ -187,12 +187,12 @@ export function Plans() {
                         <Badge className="ml-2 bg-primary text-primary-foreground">Economize 20%</Badge>
                     </Label>
                 </div>
-                
-                 <div className="plans-scroll-container flex flex-row md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch max-w-7xl mx-auto px-4 md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory pt-10 pb-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                    <div className="w-[80vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[0]} isAnnual={isAnnual} /></div>
-                    <div className="w-[80vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[1]} isAnnual={isAnnual} isPopular /></div>
-                    <div className="w-[80vw] md:w-auto shrink-0 snap-center pr-4 md:pr-0"><PlanCard plan={plansData[2]} isAnnual={isAnnual} /></div>
-                </div>
+            </div>
+            
+            <div className="plans-scroll-container flex flex-row md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch w-full md:max-w-7xl md:mx-auto px-6 md:px-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory pt-10 pb-12" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                <div className="w-[78vw] md:w-auto shrink-0 snap-start"><PlanCard plan={plansData[0]} isAnnual={isAnnual} /></div>
+                <div className="w-[78vw] md:w-auto shrink-0 snap-start"><PlanCard plan={plansData[1]} isAnnual={isAnnual} isPopular /></div>
+                <div className="w-[78vw] md:w-auto shrink-0 snap-start pr-6 md:pr-0"><PlanCard plan={plansData[2]} isAnnual={isAnnual} /></div>
             </div>
         </section>
     );
