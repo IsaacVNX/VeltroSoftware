@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
@@ -15,6 +15,18 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
     const heroRef = useRef<HTMLElement>(null);
+    const titleRef = useRef<HTMLDivElement>(null);
+    const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+    const [hoveredWord, setHoveredWord] = useState<number | null>(null);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!titleRef.current) return;
+        const rect = titleRef.current.getBoundingClientRect();
+        setMousePos({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+        });
+    };
 
     const heroTitleWords = "Veltro Software: A solução ágil para o seu negócio.".split(" ");
     const heroSubtitleWords = "Desenvolvemos soluções de software ágeis e inteligentes que caçam e eliminam ineficiências, capacitando empresas a focarem no que realmente importa: seu crescimento.".split(" ");
@@ -32,7 +44,18 @@ export function Hero() {
             }
         });
 
-        // Hero Text - Split Word Reveal
+        // Hero Text - Veltro Software
+        gsap.to([".veltro-title-base", ".veltro-title-glow"], { 
+             y: "0%", 
+             opacity: 1, 
+             rotateZ: 0,
+             stagger: 0.08, 
+             duration: 1.2, 
+             ease: "power4.out",
+             delay: 1.2
+        });
+
+        // Hero Text - Subtitle
         gsap.to(".hero-word-inner", { 
              y: "0%", 
              opacity: 1, 
@@ -40,7 +63,7 @@ export function Hero() {
              stagger: 0.04, 
              duration: 1.2, 
              ease: "power4.out",
-             delay: 1.2
+             delay: 1.4
         });
 
         // Hero CTA Reveal
@@ -50,6 +73,33 @@ export function Hero() {
             duration: 1.2,
             ease: "power4.out",
             delay: 1.8
+        });
+
+        // Mockup Reveal
+        gsap.to(".hero-mockup-container", {
+            y: 0,
+            opacity: 1,
+            duration: 1.5,
+            ease: "power3.out",
+            delay: 2.2
+        });
+
+        // Logo Bar Reveal
+        gsap.to(".hero-logos", {
+            opacity: 1,
+            duration: 1.5,
+            ease: "power2.out",
+            delay: 2.5
+        });
+
+        // Floating Blobs Animation
+        gsap.to(".hero-blob", {
+            x: "random(-50, 50)",
+            y: "random(-50, 50)",
+            duration: "random(10, 20)",
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
         });
     }, { scope: heroRef });
 
@@ -82,19 +132,65 @@ export function Hero() {
     };
 
     return (
-        <section ref={heroRef} className="relative w-full min-h-[100svh] h-[100svh] flex flex-col items-center justify-center text-foreground pt-12 md:pt-16">
+        <section id="hero" ref={heroRef} className="relative w-full min-h-screen flex flex-col items-center justify-center text-foreground pt-36 pb-24 overflow-hidden">
             <Particles id="tsparticles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-[-1]" />
             <div className="absolute inset-0 bg-white/60 z-0"></div>
+            
+            {/* Background Decor - Blobs */}
+            <div className="absolute bottom-1/4 -right-20 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] z-0 hero-blob"></div>
+
             <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
-                <div className="hero-text space-y-4">
-                    <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-[#0A2A4D] flex flex-wrap justify-center gap-x-2 md:gap-x-3 gap-y-1">
-                        {heroTitleWords.map((word, i) => (
-                            <span key={`h1-${i}`} className="inline-block overflow-hidden py-3 px-1 -my-2">
-                                <span className="hero-word-inner inline-block opacity-0 translate-y-[120%] rotate-[10deg]">{word}</span>
-                            </span>
-                        ))}
+                <div className="hero-text space-y-6 max-w-6xl mx-auto">
+                    <h1 className="font-bold tracking-tight text-accent flex flex-col items-center gap-y-2 md:gap-y-4">
+                        {/* Veltro Software (Maior) com Efeito Local (Spotlight) via Mask */}
+                        <div 
+                            ref={titleRef}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={() => { setMousePos({x: -1000, y: -1000}); setHoveredWord(null); }}
+                            className="relative flex flex-wrap justify-center text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tighter cursor-default w-full"
+                        >
+                            {/* Camada Base (Visível Normalmente) */}
+                            <div className="flex flex-wrap justify-center gap-x-3 md:gap-x-5 text-accent">
+                                {"Veltro Software".split(" ").map((word, i) => (
+                                    <span 
+                                        key={`vh1-base-${i}`} 
+                                        className={`inline-block overflow-hidden py-3 px-1 -my-2 transition-transform duration-300 ${hoveredWord === i ? '-translate-y-2 scale-105' : ''}`}
+                                        onMouseEnter={() => setHoveredWord(i)}
+                                    >
+                                        <span className="veltro-title-base inline-block opacity-0 translate-y-[120%] rotate-[10deg]">{word}</span>
+                                    </span>
+                                ))}
+                            </div>
+                            
+                            {/* Camada Spotlight (Glow Revelado pelo Mouse) refinada (Limpa, sem box) */}
+                            <div 
+                                className="absolute inset-0 flex flex-wrap justify-center gap-x-3 md:gap-x-5 text-primary drop-shadow-[0_0_20px_rgba(160,217,17,0.7)] pointer-events-none"
+                                style={{
+                                    WebkitMaskImage: `radial-gradient(140px circle at ${mousePos.x}px ${mousePos.y}px, black 30%, transparent 80%)`,
+                                    maskImage: `radial-gradient(140px circle at ${mousePos.x}px ${mousePos.y}px, black 30%, transparent 80%)`,
+                                }}
+                            >
+                                {"Veltro Software".split(" ").map((word, i) => (
+                                    <span 
+                                        key={`vh1-glow-${i}`} 
+                                        className={`inline-block overflow-hidden py-3 px-1 -my-2 transition-transform duration-300 ${hoveredWord === i ? '-translate-y-2 scale-105' : ''}`}
+                                    >
+                                        <span className="veltro-title-glow inline-block opacity-0 translate-y-[120%] rotate-[10deg] font-black brightness-110">{word}</span>
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                        {/* A solução ágil... (Menor) */}
+                        <div className="flex flex-wrap justify-center gap-x-2 md:gap-x-3 text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-accent/90 tracking-tight">
+                             {"A solução ágil para o seu negócio.".split(" ").map((word, i) => (
+                                <span key={`ah1-${i}`} className="inline-block overflow-hidden py-2 px-1 -my-2">
+                                    <span className="hero-word-inner inline-block opacity-0 translate-y-[120%] rotate-[10deg]">{word}</span>
+                                </span>
+                            ))}
+                        </div>
                     </h1>
-                    <p className="max-w-[700px] mx-auto text-sm sm:text-lg md:text-xl text-black flex flex-wrap justify-center gap-x-1.5 md:gap-x-2 gap-y-0.5 md:gap-y-1 px-4">
+
+                    <p className="max-w-4xl mx-auto text-sm sm:text-lg md:text-2xl text-foreground flex flex-wrap justify-center gap-x-2 md:gap-x-3 gap-y-1 md:gap-y-2 px-4 mt-6">
                         {heroSubtitleWords.map((word, i) => (
                             <span key={`p-${i}`} className="inline-block overflow-hidden pb-2">
                                 <span className="hero-word-inner inline-block opacity-0 translate-y-[120%] rotate-[5deg]">{word}</span>
@@ -102,7 +198,7 @@ export function Hero() {
                         ))}
                     </p>
                     <div className="hero-cta opacity-0 translate-y-12">
-                        <Button className="mt-6 md:mt-8 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer text-base md:text-lg px-6 md:px-8 py-6 md:py-6 w-full sm:w-auto shadow-xl" onClick={(e) => {
+                        <Button className="mt-8 md:mt-12 bg-primary text-primary-foreground hover:bg-primary/90 font-bold transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer text-base md:text-xl px-8 md:px-12 py-7 md:py-8 w-full sm:w-auto shadow-xl" onClick={(e) => {
                             e.preventDefault();
                             const plansEl = document.getElementById('plans');
                             if (plansEl) {
@@ -110,8 +206,27 @@ export function Hero() {
                             }
                         }}>
                             Começar Agora
-                            <ArrowRight className="ml-2 h-5 w-5" />
+                            <ArrowRight className="ml-3 h-6 w-6" />
                         </Button>
+                    </div>
+
+                    {/* Product Mockup Container */}
+                    <div className="hero-mockup-container mt-20 md:mt-32 relative max-w-5xl mx-auto opacity-0 translate-y-24 perspective-2000">
+                        {/* Aspect-[4/3] (16/12) ensures it's taller than 16/11 avoiding cutting the pagination */}
+                        <div className="relative rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-border bg-white transform rotate-x-1 aspect-square sm:aspect-[4/3] md:aspect-[16/12.5]">
+                            <img src="/hero-mockup.png" alt="Veltro Gestão Dashboard" className="w-full h-full object-cover object-top" />
+                        </div>
+                    </div>
+
+                    {/* Trusted By / Logo Bar */}
+                    <div className="hero-logos mt-24 md:mt-32 opacity-0">
+                        <p className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-accent/40 mb-10">Confiado por líderes do setor</p>
+                        <div className="flex flex-wrap justify-center items-center gap-10 md:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
+                             <div className="h-6 md:h-8 flex items-center font-black text-xl md:text-2xl text-accent select-none">BUILDER</div>
+                             <div className="h-6 md:h-8 flex items-center font-black text-xl md:text-2xl text-accent select-none">CONSTRUX</div>
+                             <div className="h-6 md:h-8 flex items-center font-black text-xl md:text-2xl text-accent select-none">VELOX</div>
+                             <div className="h-6 md:h-8 flex items-center font-black text-xl md:text-2xl text-accent select-none">INFRA</div>
+                        </div>
                     </div>
                 </div>
             </div>
