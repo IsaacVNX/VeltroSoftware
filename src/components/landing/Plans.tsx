@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -42,14 +42,14 @@ const PlanCard = ({ plan, isAnnual, isPopular }: { plan: any, isAnnual: boolean,
                     MAIS POPULAR
                 </div>
             )}
-            <h3 className="text-2xl font-bold text-accent">{plan.name}</h3>
+            <h3 className="text-xl md:text-2xl font-bold text-accent">{plan.name}</h3>
             <p className="mt-2 min-h-[40px] text-sm text-muted-foreground">{plan.description}</p>
              <div className="my-8 flex h-[72px] items-center justify-center">
                 {isCustomPrice ? (
                     <span className="text-3xl font-bold text-accent">{price}</span>
                 ) : (
                     <div>
-                        <span className="text-5xl font-bold text-accent">{price}</span>
+                        <span className="text-4xl md:text-5xl font-bold text-accent">{price}</span>
                         <span className="text-muted-foreground">{isAnnual ? '/ano' : '/mês'}</span>
                     </div>
                 )}
@@ -107,6 +107,18 @@ export function Plans() {
                 ease: "power2.out",
                 duration: 0.6
             });
+
+            // Arraste indicator fade out ao mover o scroll horizontal
+            gsap.to(".scroll-indicator", {
+                opacity: 0,
+                scrollTrigger: {
+                    scroller: ".plans-scroll-container",
+                    horizontal: true,
+                    trigger: ".plan-card",
+                    start: "left left",
+                    onEnter: () => gsap.to(".scroll-indicator", { opacity: 0, duration: 0.3, pointerEvents: "none" })
+                }
+            });
         });
 
     }, { scope: plansRef });
@@ -155,10 +167,16 @@ export function Plans() {
         <section id="plans" ref={plansRef} className="w-full py-12 md:py-24 lg:py-32 bg-white flex flex-col justify-center min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="mx-auto max-w-5xl space-y-4 text-center">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-accent">Planos que se adaptam ao seu crescimento</h2>
-                    <p className="max-w-3xl text-secondary md:text-xl/relaxed mx-auto">
+                    <h2 className="text-2xl md:text-5xl font-bold tracking-tighter text-accent">Planos que se adaptam ao seu crescimento</h2>
+                    <p className="max-w-3xl text-secondary text-sm md:text-xl/relaxed mx-auto px-4">
                         Escolha o plano Veltro ideal para caçar suas ineficiências e acelerar seus resultados. Sem complicação.
                     </p>
+                </div>
+
+                {/* Mobile Scroll Indicator */}
+                <div className="scroll-indicator flex md:hidden items-center justify-center gap-2 mt-8 text-primary font-medium animate-pulse">
+                    <span>Deslize para ver planos</span>
+                    <ChevronRight className="h-5 w-5" />
                 </div>
 
                 <div className="flex items-center justify-center gap-4 my-8">
@@ -170,10 +188,10 @@ export function Plans() {
                     </Label>
                 </div>
                 
-                 <div className="flex flex-row md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch max-w-7xl mx-auto px-4 md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                    <div className="w-[85vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[0]} isAnnual={isAnnual} /></div>
-                    <div className="w-[85vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[1]} isAnnual={isAnnual} isPopular /></div>
-                    <div className="w-[85vw] md:w-auto shrink-0 snap-center pr-4 md:pr-0"><PlanCard plan={plansData[2]} isAnnual={isAnnual} /></div>
+                 <div className="plans-scroll-container flex flex-row md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch max-w-7xl mx-auto px-4 md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory pt-10 pb-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    <div className="w-[80vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[0]} isAnnual={isAnnual} /></div>
+                    <div className="w-[80vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[1]} isAnnual={isAnnual} isPopular /></div>
+                    <div className="w-[80vw] md:w-auto shrink-0 snap-center pr-4 md:pr-0"><PlanCard plan={plansData[2]} isAnnual={isAnnual} /></div>
                 </div>
             </div>
         </section>
