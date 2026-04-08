@@ -55,9 +55,9 @@ export function Features() {
 
     return (
         <section id="features" ref={featuresPinnedRef} className="w-full bg-gradient-to-b from-accent to-[#153457] text-accent-foreground relative z-20 overflow-hidden h-screen flex items-center">
-             <div className="features-horizontal-scroll-container flex items-stretch gap-6 px-4 md:px-24 w-[max-content] h-[450px]">
+             <div className="features-horizontal-scroll-container flex items-stretch gap-6 px-0 md:px-24 w-[max-content] h-[450px]">
                 {/* Intro Slide */}
-                <div className="w-[85vw] md:w-[60vw] lg:w-[45vw] shrink-0 mr-8 flex flex-col justify-center md:text-left text-center">
+                <div className="w-screen md:w-[60vw] lg:w-[45vw] shrink-0 md:mr-8 flex flex-col justify-center md:text-left text-center">
                     <h1 className="veltro-gestao-marca text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-300 drop-shadow-md mb-8 md:mb-12 opacity-0 translate-y-12">
                         Veltro Gestão
                     </h1>
