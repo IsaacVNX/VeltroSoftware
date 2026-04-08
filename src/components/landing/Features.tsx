@@ -33,8 +33,8 @@ export function Features() {
                 scrollTrigger: {
                     trigger: featuresPinnedRef.current,
                     start: "top top",
-                    end: `+=${totalScrolling + 800}`,
-                    scrub: 0.8,
+                    end: `+=${totalScrolling + 1500}`,
+                    scrub: 1.5,
                     pin: true,
                     anticipatePin: 1
                 }

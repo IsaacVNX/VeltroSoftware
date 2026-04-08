@@ -143,9 +143,8 @@ export function Plans() {
             price: { monthly: "R$ 1.200,00", annual: "R$ 11.520,00" },
             cta: { text: "Falar com Vendas", href: "#plans" },
             features: [
-                 "Até <strong>20 Usuários</strong>",
+                 "Até <strong>10 Usuários</strong>",
                 "Tudo do plano Profissional",
-                "Segurança Avançada (SSO)",
                 "Gerente de Contas Dedicado",
                 "SLA de Suporte e Uptime",
             ],
