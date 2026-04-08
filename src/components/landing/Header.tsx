@@ -4,7 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { assets } from '@/lib/assets';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -13,6 +14,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function Header() {
     const headerRef = useRef<HTMLElement>(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useGSAP(() => {
         // Dynamic Header
@@ -25,25 +27,32 @@ export function Header() {
         });
     }, { scope: headerRef });
 
+    const closeMenu = () => setIsMobileMenuOpen(false);
+
+    const handlePlansScroll = (e: React.MouseEvent) => {
+        e.preventDefault();
+        closeMenu();
+        const plansEl = document.getElementById('plans');
+        if (plansEl) {
+            window.scrollTo({ top: plansEl.getBoundingClientRect().top + window.scrollY + 850, behavior: 'instant' });
+        }
+    };
+
     return (
-        <header ref={headerRef} className="px-4 lg:px-6 h-16 flex items-center sticky top-0 z-50 bg-accent text-accent-foreground transition-all duration-300">
-            <Link href="/" className="flex items-center justify-center" prefetch={false}>
-                <Image src={assets.logoBranca} alt="Veltro Software Logo" width={120} height={34} style={{ width: "auto", height: "auto" }} />
+        <header ref={headerRef} className="px-4 lg:px-6 h-16 flex items-center justify-between sticky top-0 z-50 bg-accent text-accent-foreground transition-all duration-300">
+            <Link href="/" className="flex items-center justify-center shrink-0 z-50" prefetch={false} onClick={closeMenu}>
+                <Image src={assets.logoBranca} alt="Veltro Software Logo" width={110} height={31} className="w-[100px] md:w-[120px] h-auto" />
             </Link>
-            <nav className="ml-auto flex gap-4 sm:gap-6">
+
+            {/* Desktop Navigation */}
+            <nav className="ml-auto hidden md:flex items-center gap-4 lg:gap-6">
                 <Button asChild variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
                     <Link href="/" prefetch={false}>Home</Link>
                 </Button>
                 <Button asChild variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
                     <Link href="#features" prefetch={false}>Nossos Produtos</Link>
                 </Button>
-                <Button variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground cursor-pointer" onClick={(e) => {
-                    e.preventDefault();
-                    const plansEl = document.getElementById('plans');
-                    if (plansEl) {
-                        window.scrollTo({ top: plansEl.getBoundingClientRect().top + window.scrollY + 850, behavior: 'instant' });
-                    }
-                }}>
+                <Button variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground cursor-pointer" onClick={handlePlansScroll}>
                     Planos
                 </Button>
                 <Button asChild variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
@@ -53,6 +62,42 @@ export function Header() {
                     <Link href="https://app.veltrogestao.com/login" prefetch={false}>Entrar</Link>
                 </Button>
             </nav>
+
+            {/* Mobile Menu Toggle Button */}
+            <button 
+                className="md:hidden flex items-center justify-center p-2 z-50"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
+            >
+                {isMobileMenuOpen ? (
+                    <X className="h-6 w-6 text-accent-foreground" />
+                ) : (
+                    <Menu className="h-6 w-6 text-accent-foreground" />
+                )}
+            </button>
+
+            {/* Mobile Navigation Dropdown */}
+            {isMobileMenuOpen && (
+                <div className="absolute top-16 left-0 right-0 bg-accent/95 backdrop-blur-md border-b border-border shadow-lg md:hidden flex flex-col p-4 gap-2 z-40">
+                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={closeMenu}>
+                        <Link href="/" prefetch={false}>Home</Link>
+                    </Button>
+                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={closeMenu}>
+                        <Link href="#features" prefetch={false}>Nossos Produtos</Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground cursor-pointer" onClick={handlePlansScroll}>
+                        Planos
+                    </Button>
+                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={closeMenu}>
+                        <Link href="#about" prefetch={false}>Sobre Nós</Link>
+                    </Button>
+                    <div className="pt-2 border-t border-accent-foreground/20 mt-2">
+                        <Button asChild variant="secondary" className="w-full justify-center transition-all duration-300">
+                            <Link href="https://app.veltrogestao.com/login" prefetch={false} onClick={closeMenu}>Entrar no Sistema</Link>
+                        </Button>
+                    </div>
+                </div>
+            )}
         </header>
     );
 }

@@ -74,20 +74,41 @@ export function Plans() {
     const [isAnnual, setIsAnnual] = useState(false);
 
     useGSAP(() => {
-        gsap.to(".plan-card", {
-            scrollTrigger: { 
-                 trigger: plansRef.current, 
-                 start: "top top", 
-                 end: "+=800", 
-                 scrub: 1,
-                 pin: true,
-                 anticipatePin: 1
-            },
-            y: 0, 
-            opacity: 1, 
-            stagger: 0.2, 
-            ease: "none"
+        let mm = gsap.matchMedia();
+
+        // Desktop: Fade Up and Pin Stagger
+        mm.add("(min-width: 768px)", () => {
+            gsap.to(".plan-card", {
+                scrollTrigger: { 
+                     trigger: plansRef.current, 
+                     start: "top top", 
+                     end: "+=800", 
+                     scrub: 1,
+                     pin: true,
+                     anticipatePin: 1
+                },
+                y: 0, 
+                opacity: 1, 
+                stagger: 0.2, 
+                ease: "none"
+            });
         });
+
+        // Mobile: Apenas o fade up, usamos Touch scroll nativo via CSS
+        mm.add("(max-width: 767px)", () => {
+            gsap.to(".plan-card", {
+                scrollTrigger: { 
+                     trigger: plansRef.current, 
+                     start: "top 80%", 
+                },
+                y: 0, 
+                opacity: 1, 
+                stagger: 0.15, 
+                ease: "power2.out",
+                duration: 0.6
+            });
+        });
+
     }, { scope: plansRef });
 
     const plansData = [
@@ -150,10 +171,10 @@ export function Plans() {
                     </Label>
                 </div>
                 
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch max-w-7xl mx-auto">
-                    <PlanCard plan={plansData[0]} isAnnual={isAnnual} />
-                    <PlanCard plan={plansData[1]} isAnnual={isAnnual} isPopular />
-                    <PlanCard plan={plansData[2]} isAnnual={isAnnual} />
+                 <div className="flex flex-row md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch max-w-7xl mx-auto px-4 md:px-0 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    <div className="w-[85vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[0]} isAnnual={isAnnual} /></div>
+                    <div className="w-[85vw] md:w-auto shrink-0 snap-center"><PlanCard plan={plansData[1]} isAnnual={isAnnual} isPopular /></div>
+                    <div className="w-[85vw] md:w-auto shrink-0 snap-center pr-4 md:pr-0"><PlanCard plan={plansData[2]} isAnnual={isAnnual} /></div>
                 </div>
             </div>
         </section>

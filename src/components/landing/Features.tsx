@@ -57,12 +57,14 @@ export function Features() {
         <section id="features" ref={featuresPinnedRef} className="w-full bg-gradient-to-b from-accent to-[#153457] text-accent-foreground relative z-20 overflow-hidden h-screen flex items-center">
              <div className="features-horizontal-scroll-container flex items-stretch gap-6 px-4 md:px-24 w-[max-content] h-[450px]">
                 {/* Intro Slide */}
-                <div className="w-[85vw] md:w-[60vw] lg:w-[45vw] shrink-0 mr-8 flex flex-col justify-center">
-                    <h1 className="veltro-gestao-marca text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-300 drop-shadow-md mb-6 opacity-0 translate-y-12">
+                <div className="w-[85vw] md:w-[60vw] lg:w-[45vw] shrink-0 mr-8 flex flex-col justify-center md:text-left text-center">
+                    <h1 className="veltro-gestao-marca text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-300 drop-shadow-md mb-8 md:mb-12 opacity-0 translate-y-12">
                         Veltro Gestão
                     </h1>
-                    <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6 leading-tight">Controle Total em <br/><span className="text-primary opacity-90">Uma Plataforma</span></h2>
-                    <p className="text-accent-foreground/80 md:text-xl/relaxed max-w-2xl">
+                    <h2 className="text-xl md:text-2xl lg:text-4xl font-semibold mb-2 md:mb-3 leading-snug opacity-90">
+                        Controle Total em <span className="text-white">Uma Plataforma</span>
+                    </h2>
+                    <p className="text-accent-foreground/80 md:text-xl/relaxed max-w-2xl mx-auto md:mx-0">
                       Do canteiro de obras ao escritório, a Veltro Software centraliza todas as operações com o seu novo sistema <strong>Veltro Gestão</strong>, garantindo eficiência e segurança em cada etapa do processo produtivo e administrativo.
                     </p>
                 </div>
@@ -86,7 +88,7 @@ export function Features() {
                 <div className="w-[80vw] sm:w-[350px] shrink-0">
                     <FeatureCard icon={Truck} title="Controle de Frotas" description="Gerencie a manutenção, localização e alocação de veículos e equipamentos pesados otimizando ativos." />
                 </div>
-                <div className="w-[80vw] sm:w-[350px] shrink-0 mr-24">
+                <div className="w-[80vw] sm:w-[350px] shrink-0 mr-24 md:mr-24">
                     <FeatureCard icon={ShoppingCart} title="Módulo de Suprimentos" description="Gerencie o processo de cotações, compras e aquisição de materiais de forma enxuta." />
                 </div>
              </div>

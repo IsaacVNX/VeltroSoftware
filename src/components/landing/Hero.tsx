@@ -82,19 +82,19 @@ export function Hero() {
     };
 
     return (
-        <section ref={heroRef} className="relative w-full h-screen flex items-center justify-center text-foreground">
+        <section ref={heroRef} className="relative w-full min-h-[100svh] h-[100svh] flex flex-col items-center justify-center text-foreground pt-16">
             <Particles id="tsparticles" init={particlesInit} options={particlesOptions} className="absolute inset-0 z-[-1]" />
             <div className="absolute inset-0 bg-white/60 z-0"></div>
             <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
                 <div className="hero-text space-y-4">
-                    <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-[#0A2A4D] flex flex-wrap justify-center gap-x-3 gap-y-1">
+                    <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-[#0A2A4D] flex flex-wrap justify-center gap-x-2 md:gap-x-3 gap-y-1">
                         {heroTitleWords.map((word, i) => (
                             <span key={`h1-${i}`} className="inline-block overflow-hidden py-3 px-1 -my-2">
                                 <span className="hero-word-inner inline-block opacity-0 translate-y-[120%] rotate-[10deg]">{word}</span>
                             </span>
                         ))}
                     </h1>
-                    <p className="max-w-[700px] mx-auto text-lg md:text-xl text-black flex flex-wrap justify-center gap-x-2 gap-y-1">
+                    <p className="max-w-[700px] mx-auto text-base sm:text-lg md:text-xl text-black flex flex-wrap justify-center gap-x-1.5 md:gap-x-2 gap-y-0.5 md:gap-y-1">
                         {heroSubtitleWords.map((word, i) => (
                             <span key={`p-${i}`} className="inline-block overflow-hidden pb-2">
                                 <span className="hero-word-inner inline-block opacity-0 translate-y-[120%] rotate-[5deg]">{word}</span>
@@ -102,7 +102,7 @@ export function Hero() {
                         ))}
                     </p>
                     <div className="hero-cta opacity-0 translate-y-12">
-                        <Button className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer text-lg px-8 py-6" onClick={(e) => {
+                        <Button className="mt-6 md:mt-8 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer text-base md:text-lg px-6 md:px-8 py-6 md:py-6 w-full sm:w-auto shadow-xl" onClick={(e) => {
                             e.preventDefault();
                             const plansEl = document.getElementById('plans');
                             if (plansEl) {
