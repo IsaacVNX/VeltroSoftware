@@ -50,7 +50,7 @@ export function Header() {
                     <Link href="#about" prefetch={false}>Sobre Nós</Link>
                 </Button>
                 <Button asChild variant="secondary" className="transition-all duration-300 ease-in-out hover:scale-105">
-                    <Link href="https://www.veltrogestao.com/login" prefetch={false}>Entrar</Link>
+                    <Link href="https://app.veltrogestao.com/login" prefetch={false}>Entrar</Link>
                 </Button>
             </nav>
         </header>
