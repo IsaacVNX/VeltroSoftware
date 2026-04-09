@@ -16,7 +16,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function LandingPage() {
     useGSAP(() => {
-        // Força a página a sempre carregar no Topo
+        // Limpa a memória de scroll do GSAP e do navegador
+        ScrollTrigger.clearScrollMemory();
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
@@ -27,14 +28,21 @@ export default function LandingPage() {
             touchMultiplier: 2,
         });
 
-        // Força reset imediato e após um pequeno delay para garantir
-        lenis.scrollTo(0, { immediate: true });
-        window.scrollTo(0, 0);
-        
-        setTimeout(() => {
+        // Reset agressivo para garantir o topo em todas as plataformas
+        const forceScrollTop = () => {
             window.scrollTo(0, 0);
             lenis.scrollTo(0, { immediate: true });
-        }, 50);
+        };
+
+        // Executa em múltiplos estágios do ciclo de vida da página
+        forceScrollTop();
+        
+        // Pequenos atrasos para cobrir o tempo de renderização dos componentes pesados no PC
+        setTimeout(forceScrollTop, 50);
+        setTimeout(forceScrollTop, 250);
+        
+        // Garante que o ScrollTrigger saiba que estamos no topo após recalcular tudo
+        ScrollTrigger.refresh();
 
         lenis.on('scroll', ScrollTrigger.update);
 
