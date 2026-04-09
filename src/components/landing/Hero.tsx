@@ -44,27 +44,25 @@ export function Hero() {
             }
         });
 
-        // Hero Text - Veltro Software
-        gsap.to([".veltro-title-base", ".veltro-title-glow"], { 
-             y: "0%", 
-             opacity: 1, 
-             rotateZ: 0,
-             stagger: 0.08, 
-             duration: 1.2, 
-             ease: "power4.out",
-             delay: 1.2
-        });
+        // Hero Text - Veltro Software (Character Split 3D Animation)
+        const tl = gsap.timeline({ delay: 1.2 });
+        tl.fromTo(".veltro-title-char-base", 
+            { opacity: 0, scale: 0, y: 80, rotationX: 180, transformOrigin: "0% 50% -50" },
+            { duration: 1, opacity: 1, scale: 1, y: 0, rotationX: 0, ease: "back.out(1.7)", stagger: 0.05 },
+            0
+        );
+        tl.fromTo(".veltro-title-char-glow", 
+            { opacity: 0, scale: 0, y: 80, rotationX: 180, transformOrigin: "0% 50% -50" },
+            { duration: 1, opacity: 1, scale: 1, y: 0, rotationX: 0, ease: "back.out(1.7)", stagger: 0.05 },
+            0
+        );
 
-        // Hero Text - Subtitle
-        gsap.to(".hero-word-inner", { 
-             y: "0%", 
-             opacity: 1, 
-             rotateZ: 0,
-             stagger: 0.04, 
-             duration: 1.2, 
-             ease: "power4.out",
-             delay: 1.4
-        });
+        // Hero Text - Subtitle & Paragraph
+        tl.fromTo(".hero-char-inner", 
+            { opacity: 0, scale: 0, y: 80, rotationX: 180, transformOrigin: "0% 50% -50" },
+            { duration: 1, opacity: 1, scale: 1, y: 0, rotationX: 0, ease: "back.out(1.7)", stagger: 0.015 },
+            0.6
+        );
 
         // Hero CTA Reveal
         gsap.to(".hero-cta", {
@@ -150,14 +148,18 @@ export function Hero() {
                             className="relative flex flex-wrap justify-center text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tighter cursor-default w-full"
                         >
                             {/* Camada Base (Visível Normalmente) */}
-                            <div className="flex flex-wrap justify-center gap-x-3 md:gap-x-5 text-accent">
+                            <div className="flex flex-wrap justify-center gap-x-3 md:gap-x-5 text-accent" style={{ perspective: "1000px" }}>
                                 {"Veltro Software".split(" ").map((word, i) => (
                                     <span 
                                         key={`vh1-base-${i}`} 
-                                        className={`inline-block overflow-hidden py-3 px-1 -my-2 transition-transform duration-300 ${hoveredWord === i ? '-translate-y-2 scale-105' : ''}`}
+                                        className={`inline-block py-3 px-1 -my-2 transition-transform duration-300 ${hoveredWord === i ? '-translate-y-2 scale-105' : ''}`}
                                         onMouseEnter={() => setHoveredWord(i)}
                                     >
-                                        <span className="veltro-title-base inline-block opacity-0 translate-y-[120%] rotate-[10deg]">{word}</span>
+                                        {word.split("").map((char, j) => (
+                                            <span key={`vh1-base-char-${i}-${j}`} className="veltro-title-char-base inline-block opacity-0 will-change-[transform,opacity]">
+                                                {char}
+                                            </span>
+                                        ))}
                                     </span>
                                 ))}
                             </div>
@@ -168,32 +170,41 @@ export function Hero() {
                                 style={{
                                     WebkitMaskImage: `radial-gradient(140px circle at ${mousePos.x}px ${mousePos.y}px, black 30%, transparent 80%)`,
                                     maskImage: `radial-gradient(140px circle at ${mousePos.x}px ${mousePos.y}px, black 30%, transparent 80%)`,
+                                    perspective: "1000px",
                                 }}
                             >
                                 {"Veltro Software".split(" ").map((word, i) => (
                                     <span 
                                         key={`vh1-glow-${i}`} 
-                                        className={`inline-block overflow-hidden py-3 px-1 -my-2 transition-transform duration-300 ${hoveredWord === i ? '-translate-y-2 scale-105' : ''}`}
+                                        className={`inline-block py-3 px-1 -my-2 transition-transform duration-300 ${hoveredWord === i ? '-translate-y-2 scale-105' : ''}`}
                                     >
-                                        <span className="veltro-title-glow inline-block opacity-0 translate-y-[120%] rotate-[10deg] font-black brightness-110">{word}</span>
+                                        {word.split("").map((char, j) => (
+                                            <span key={`vh1-glow-char-${i}-${j}`} className="veltro-title-char-glow inline-block opacity-0 font-black brightness-110 will-change-[transform,opacity]">
+                                                {char}
+                                            </span>
+                                        ))}
                                     </span>
                                 ))}
                             </div>
                         </div>
                         {/* A solução ágil... (Menor) */}
-                        <div className="flex flex-wrap justify-center gap-x-2 md:gap-x-3 text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-accent/90 tracking-tight">
+                        <div className="flex flex-wrap justify-center gap-x-2 md:gap-x-3 text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-accent/90 tracking-tight" style={{ perspective: "1000px" }}>
                              {"A solução ágil para o seu negócio.".split(" ").map((word, i) => (
-                                <span key={`ah1-${i}`} className="inline-block overflow-hidden py-2 px-1 -my-2">
-                                    <span className="hero-word-inner inline-block opacity-0 translate-y-[120%] rotate-[10deg]">{word}</span>
+                                <span key={`ah1-${i}`} className="inline-block py-2 px-1 -my-2">
+                                    {word.split("").map((char, j) => (
+                                        <span key={`ah1-char-${i}-${j}`} className="hero-char-inner inline-block opacity-0 will-change-[transform,opacity]">{char}</span>
+                                    ))}
                                 </span>
                             ))}
                         </div>
                     </h1>
 
-                    <p className="max-w-4xl mx-auto text-sm sm:text-lg md:text-2xl text-foreground flex flex-wrap justify-center gap-x-2 md:gap-x-3 gap-y-1 md:gap-y-2 px-4 mt-6">
+                    <p className="max-w-4xl mx-auto text-sm sm:text-lg md:text-2xl text-foreground flex flex-wrap justify-center gap-x-2 md:gap-x-3 gap-y-1 md:gap-y-2 px-4 mt-6" style={{ perspective: "1000px" }}>
                         {heroSubtitleWords.map((word, i) => (
-                            <span key={`p-${i}`} className="inline-block overflow-hidden pb-2">
-                                <span className="hero-word-inner inline-block opacity-0 translate-y-[120%] rotate-[5deg]">{word}</span>
+                            <span key={`p-${i}`} className="inline-block pb-2">
+                                {word.split("").map((char, j) => (
+                                    <span key={`p-char-${i}-${j}`} className="hero-char-inner inline-block opacity-0 will-change-[transform,opacity]">{char}</span>
+                                ))}
                             </span>
                         ))}
                     </p>
