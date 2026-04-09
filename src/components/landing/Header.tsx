@@ -85,6 +85,32 @@ export function Header() {
         }
     };
 
+    const handleAboutScroll = (e: React.MouseEvent) => {
+        e.preventDefault();
+        closeMenu();
+        const aboutEl = document.getElementById('about');
+        if (aboutEl) {
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = aboutEl.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offset = 80;
+
+            window.scrollTo({
+                top: elementPosition - offset,
+                behavior: 'instant'
+            });
+        }
+    };
+
+    const handleHomeScroll = (e: React.MouseEvent) => {
+        e.preventDefault();
+        closeMenu();
+        window.scrollTo({
+            top: 0,
+            behavior: 'instant'
+        });
+    };
+
     return (
         <header ref={headerRef} className="px-4 lg:px-6 h-16 flex items-center justify-between sticky top-0 z-50 bg-accent text-accent-foreground transition-all duration-300">
             <Link href="/" className="flex items-center justify-center shrink-0 z-50" prefetch={false} onClick={closeMenu}>
@@ -94,7 +120,7 @@ export function Header() {
             {/* Desktop Navigation */}
             <nav className="ml-auto hidden md:flex items-center gap-4 lg:gap-6">
                 <Button asChild variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
-                    <Link href="/" prefetch={false}>Home</Link>
+                    <Link href="/" prefetch={false} onClick={handleHomeScroll}>Home</Link>
                 </Button>
                 <Button asChild variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
                     <Link href="#features" prefetch={false} onClick={handleFeaturesScroll}>Nossos Produtos</Link>
@@ -103,7 +129,7 @@ export function Header() {
                     Planos
                 </Button>
                 <Button asChild variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
-                    <Link href="#about" prefetch={false}>Sobre Nós</Link>
+                    <Link href="#about" prefetch={false} onClick={handleAboutScroll}>Sobre Nós</Link>
                 </Button>
                 <Button asChild variant="secondary" className="transition-all duration-300 ease-in-out hover:scale-105">
                     <Link href="https://app.veltrogestao.com/login" prefetch={false}>Entrar</Link>
@@ -126,7 +152,7 @@ export function Header() {
             {/* Mobile Navigation Dropdown */}
             {isMobileMenuOpen && (
                 <div className="absolute top-16 left-0 right-0 bg-accent/95 backdrop-blur-md border-b border-border shadow-lg md:hidden flex flex-col p-4 gap-2 z-40">
-                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={closeMenu}>
+                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={handleHomeScroll}>
                         <Link href="/" prefetch={false}>Home</Link>
                     </Button>
                     <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
@@ -135,7 +161,7 @@ export function Header() {
                     <Button variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground cursor-pointer" onClick={handlePlansScroll}>
                         Planos
                     </Button>
-                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={closeMenu}>
+                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={handleAboutScroll}>
                         <Link href="#about" prefetch={false}>Sobre Nós</Link>
                     </Button>
                     <div className="pt-2 border-t border-accent-foreground/20 mt-2">

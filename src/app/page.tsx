@@ -20,13 +20,21 @@ export default function LandingPage() {
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
-        window.scrollTo(0, 0);
-
+        
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
             touchMultiplier: 2,
         });
+
+        // Força reset imediato e após um pequeno delay para garantir
+        lenis.scrollTo(0, { immediate: true });
+        window.scrollTo(0, 0);
+        
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+            lenis.scrollTo(0, { immediate: true });
+        }, 50);
 
         lenis.on('scroll', ScrollTrigger.update);
 
