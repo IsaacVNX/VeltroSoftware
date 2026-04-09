@@ -213,7 +213,26 @@ export function Hero() {
                             e.preventDefault();
                             const plansEl = document.getElementById('plans');
                             if (plansEl) {
-                                window.scrollTo({ top: plansEl.getBoundingClientRect().top + window.scrollY + 850, behavior: 'instant' });
+                            const plansContainer = document.getElementById('plans-container');
+                            const isMobile = window.innerWidth < 768;
+
+                            if (isMobile && plansContainer) {
+                                const offset = 80;
+                                const bodyRect = document.body.getBoundingClientRect().top;
+                                const elementRect = plansContainer.getBoundingClientRect().top;
+                                const elementPosition = elementRect - bodyRect;
+                                const offsetPosition = elementPosition - offset;
+
+                                window.scrollTo({
+                                    top: offsetPosition,
+                                    behavior: 'instant'
+                                });
+                            } else if (plansEl) {
+                                window.scrollTo({ 
+                                    top: plansEl.getBoundingClientRect().top + window.scrollY + 850, 
+                                    behavior: 'instant' 
+                                });
+                            }
                             }
                         }}>
                             Começar Agora

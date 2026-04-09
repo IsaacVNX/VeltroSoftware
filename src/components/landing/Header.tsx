@@ -29,19 +29,66 @@ export function Header() {
 
     const closeMenu = () => setIsMobileMenuOpen(false);
 
+    const handleFeaturesScroll = (e: React.MouseEvent) => {
+        e.preventDefault();
+        closeMenu();
+        
+        // Usar o ID do ScrollTrigger para controle preciso
+        const st = ScrollTrigger.getById("features-scroll");
+        
+        if (st) {
+            // Se houver uma animação (o scroll horizontal), force o reset para o início (x: 0)
+            if (st.animation) {
+                st.animation.progress(0);
+            }
+            
+            // Pular exatamente para o ponto onde o gatilho começa
+            window.scrollTo({
+                top: st.start,
+                behavior: 'instant'
+            });
+        } else {
+            // Fallback caso o ScrollTrigger ainda não tenha sido registrado
+            const featuresEl = document.getElementById('features');
+            if (featuresEl) {
+                window.scrollTo({
+                    top: featuresEl.offsetTop,
+                    behavior: 'instant'
+                });
+            }
+        }
+    };
+
     const handlePlansScroll = (e: React.MouseEvent) => {
         e.preventDefault();
         closeMenu();
         const plansEl = document.getElementById('plans');
-        if (plansEl) {
-            window.scrollTo({ top: plansEl.getBoundingClientRect().top + window.scrollY + 850, behavior: 'instant' });
+        const plansContainer = document.getElementById('plans-container');
+        const isMobile = window.innerWidth < 768;
+
+        if (isMobile && plansContainer) {
+            const offset = 80;
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = plansContainer.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'instant'
+            });
+        } else if (plansEl) {
+            window.scrollTo({ 
+                top: plansEl.getBoundingClientRect().top + window.scrollY + 850, 
+                behavior: 'instant' 
+            });
         }
     };
 
     return (
         <header ref={headerRef} className="px-4 lg:px-6 h-16 flex items-center justify-between sticky top-0 z-50 bg-accent text-accent-foreground transition-all duration-300">
             <Link href="/" className="flex items-center justify-center shrink-0 z-50" prefetch={false} onClick={closeMenu}>
-                <Image src={assets.logoBranca} alt="Veltro Software Logo" width={110} height={31} className="w-[100px] md:w-[120px] h-auto" />
+                <Image id="header-logo" src={assets.logoBranca} alt="Veltro Software Logo" width={110} height={31} className="w-[100px] md:w-[120px] h-auto opacity-0" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -50,7 +97,7 @@ export function Header() {
                     <Link href="/" prefetch={false}>Home</Link>
                 </Button>
                 <Button asChild variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
-                    <Link href="#features" prefetch={false}>Nossos Produtos</Link>
+                    <Link href="#features" prefetch={false} onClick={handleFeaturesScroll}>Nossos Produtos</Link>
                 </Button>
                 <Button variant="ghost" className="text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground cursor-pointer" onClick={handlePlansScroll}>
                     Planos
@@ -82,8 +129,8 @@ export function Header() {
                     <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={closeMenu}>
                         <Link href="/" prefetch={false}>Home</Link>
                     </Button>
-                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground" onClick={closeMenu}>
-                        <Link href="#features" prefetch={false}>Nossos Produtos</Link>
+                    <Button asChild variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground">
+                        <Link href="#features" prefetch={false} onClick={handleFeaturesScroll}>Nossos Produtos</Link>
                     </Button>
                     <Button variant="ghost" className="w-full justify-start text-accent-foreground hover:bg-accent/80 hover:text-accent-foreground cursor-pointer" onClick={handlePlansScroll}>
                         Planos

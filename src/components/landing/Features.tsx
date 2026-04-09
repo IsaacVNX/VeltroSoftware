@@ -31,6 +31,7 @@ export function Features() {
                 x: -totalScrolling,
                 ease: "none",
                 scrollTrigger: {
+                    id: "features-scroll",
                     trigger: featuresPinnedRef.current,
                     start: "top top",
                     end: `+=${totalScrolling + 1500}`,

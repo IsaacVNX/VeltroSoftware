@@ -10,24 +10,78 @@ export function Loader() {
     const loaderRef = useRef<HTMLDivElement>(null);
     const topPanelRef = useRef<HTMLDivElement>(null);
     const bottomPanelRef = useRef<HTMLDivElement>(null);
-    const logoRef = useRef<HTMLDivElement>(null);
+    const logoRef = useRef<HTMLImageElement>(null);
 
     useGSAP(() => {
         const tl = gsap.timeline();
+        const headerLogo = document.querySelector('#header-logo');
 
-        // Fade do logo saindo da frente e rompimento horizontal (Curtain Reveal)
-        tl.to(logoRef.current, { scale: 1.2, opacity: 0, duration: 0.4, ease: "power3.in", delay: 0.6 })
-          .to(topPanelRef.current, { yPercent: -100, duration: 1, ease: "power4.inOut" }, "-=0.1")
-          .to(bottomPanelRef.current, { yPercent: 100, duration: 1, ease: "power4.inOut" }, "<")
-          .set(loaderRef.current, { display: "none" }); // Remove da árvore de renders e eventos
+        tl.to(logoRef.current, {
+            opacity: 1,
+            duration: 0.5,
+            delay: 0.2
+        });
+
+        tl.add(() => {
+            if (!headerLogo || !logoRef.current) return;
+
+            // Medir as posições atuais
+            const targetRect = headerLogo.getBoundingClientRect();
+            const currentRect = logoRef.current.getBoundingClientRect();
+
+            // Calcular os centros para evitar jitter no scale
+            const targetCenterX = targetRect.left + targetRect.width / 2;
+            const targetCenterY = targetRect.top + targetRect.height / 2;
+            const currentCenterX = currentRect.left + currentRect.width / 2;
+            const currentCenterY = currentRect.top + currentRect.height / 2;
+
+            const deltaX = targetCenterX - currentCenterX;
+            const deltaY = targetCenterY - currentCenterY;
+            const scale = targetRect.width / currentRect.width;
+
+            // Garantir que a logo do header esteja pronta (mas invisível)
+            gsap.set(headerLogo, { opacity: 0 });
+
+            // Animação da logo
+            gsap.to(logoRef.current, {
+                x: deltaX,
+                y: deltaY,
+                scale: scale,
+                duration: 1.2,
+                ease: "power4.inOut",
+                force3D: true,
+                transformOrigin: "center center",
+                onComplete: () => {
+                    // Handoff instantâneo
+                    gsap.set(headerLogo, { opacity: 1 });
+                    gsap.set(logoRef.current, { opacity: 0 });
+                }
+            });
+
+            // Animação dos painéis (curtains)
+            gsap.to(topPanelRef.current, {
+                yPercent: -100,
+                duration: 1.3,
+                ease: "power4.inOut"
+            });
+
+            gsap.to(bottomPanelRef.current, {
+                yPercent: 100,
+                duration: 1.3,
+                ease: "power4.inOut",
+                onComplete: () => {
+                    gsap.set(loaderRef.current, { display: "none" });
+                }
+            });
+        }, "+=0.6");
 
     }, { scope: loaderRef });
 
     return (
         <div ref={loaderRef} className="fixed inset-0 z-[9999] pointer-events-none flex flex-col">
             {/* Logo Centralizado Flutuante */}
-            <div ref={logoRef} className="absolute inset-0 flex items-center justify-center z-50">
-               <Image src={assets.logoBranca} alt="Veltro Software" width={240} height={68} style={{ width: "auto", height: "auto" }} priority />
+            <div className="absolute inset-0 flex items-center justify-center z-50">
+               <Image ref={logoRef} src={assets.logoBranca} alt="Veltro Software" width={240} height={68} className="w-[180px] md:w-[240px] h-auto opacity-0" priority />
             </div>
             
             {/* Painel Superior */}
